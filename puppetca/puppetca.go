@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-)
+/
 
 // Client is a Puppet CA client
 type Client struct {
@@ -23,7 +23,7 @@ func isFile(str string) bool {
 }
 
 // NewClient returns a new Client
-func NewClient(baseURL, keyStr, certStr, caStr string) (c Client, err error) {
+func NewClient(baseURL, keyStr, certStr, caStr string, tlsVerify bool) (c Client, err error) {
 	// Load client cert
 	var cert tls.Certificate
 	if isFile(certStr) {
@@ -68,6 +68,7 @@ func NewClient(baseURL, keyStr, certStr, caStr string) (c Client, err error) {
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		RootCAs:      caCertPool,
+		InsecureSkipVerify: tlsVerify,
 	}
 	tr := &http.Transport{TLSClientConfig: tlsConfig}
 	httpClient := &http.Client{Transport: tr}
